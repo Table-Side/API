@@ -4,8 +4,6 @@ services:
   database:
     image: "ghcr.io/table-side/database:main"
     restart: always
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -30,7 +28,7 @@ services:
     env_file: .env
 
   frontdoor:
-    build: "ghcr.io/Table-Side/frontdoor:latest"
+    build: "ghcr.io/Table-Side/frontdoor:main"
     depends_on:
       - database
     networks:
@@ -38,7 +36,7 @@ services:
       - public
 
   restaurant:
-    build: "ghcr.io/Table-Side/restaurant:latest"
+    build: "ghcr.io/Table-Side/restaurant:main"
     depends_on:
       - database
       - frontdoor
@@ -46,7 +44,7 @@ services:
       - application
 
   order:
-    build: "ghcr.io/Table-Side/order:latest"
+    build: "ghcr.io/Table-Side/order:main"
     depends_on:
       - database
       - restaurant
@@ -54,7 +52,7 @@ services:
       - application
 
   kitchen:
-    build: "ghcr.io/Table-Side/kitchen:latest"
+    build: "ghcr.io/Table-Side/kitchen:main"
     depends_on:
       - database
       - restaurant
