@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  database:
+    image: "ghcr.io/table-side/database:main"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    env_file: .env
+    networks:
+      - application
+    volumes:
+      - database:/var/lib/postgresql/data
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - database
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD
+    networks:
+      - application
+      - public
+    env_file: .env
+
+  frontdoor:
+    build: "ghcr.io/Table-Side/frontdoor:latest"
+    depends_on:
+      - database
+    networks:
+      - application
+      - public
+
+  restaurant:
+    build: "ghcr.io/Table-Side/restaurant:latest"
+    depends_on:
+      - database
+      - frontdoor
+    networks:
+      - application
+
+  order:
+    build: "ghcr.io/Table-Side/order:latest"
+    depends_on:
+      - database
+      - restaurant
+    networks:
+      - application
+
+  kitchen:
+    build: "ghcr.io/Table-Side/kitchen:latest"
+    depends_on:
+      - database
+      - restaurant
+    networks:
+      - application
+
+networks:
+  application:
+    driver: overlay
+  public:
+    driver: host
+    external: true
+  
