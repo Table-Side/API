@@ -1,6 +1,6 @@
-# Tableside: Deploy
+# Tableside: API Deploy
 
-The production repo for Tableside.
+The production repo for Tableside's API.
 
 ## Setup
 

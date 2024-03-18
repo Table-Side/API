@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   database:
-    image: "ghcr.io/table-side/database:main"
+    image: ghcr.io/table-side/database:main
     restart: always
     environment:
       - POSTGRES_USER
@@ -11,20 +11,18 @@ services:
     env_file: .env
     networks:
       - application
-  
+
   pgadmin:
     image: dpage/pgadmin4
-    depends_on:
-      - database
     restart: unless-stopped
     environment:
       - PGADMIN_DEFAULT_EMAIL
       - PGADMIN_DEFAULT_PASSWORD
+    env_file: .env
     networks:
       - application
       - public
-    env_file: .env
-
+  
   frontdoor:
     build: "ghcr.io/Table-Side/frontdoor:main"
     depends_on:
