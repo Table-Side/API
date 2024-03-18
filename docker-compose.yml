@@ -7,7 +7,6 @@ services:
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_DB
       - POSTGRES_FRONTDOOR_USER
       - POSTGRES_FRONTDOOR_PASSWORD
       - POSTGRES_FRONTDOOR_DB
@@ -34,6 +33,8 @@ services:
     networks:
       - internal
       - external
+    ports:
+      - "8001:80"
   
   frontdoor:
     image: ghcr.io/table-side/frontdoor:main
@@ -42,6 +43,8 @@ services:
     networks:
       - internal
       - external
+    ports:
+      - "8000:3000"
 
   restaurant:
     image: ghcr.io/table-side/restaurant:main
