@@ -24,7 +24,7 @@ services:
       - public
   
   frontdoor:
-    build: "ghcr.io/Table-Side/frontdoor:main"
+    image: ghcr.io/table-side/frontdoor:main
     depends_on:
       - database
     networks:
@@ -32,7 +32,7 @@ services:
       - public
 
   restaurant:
-    build: "ghcr.io/Table-Side/restaurant:main"
+    image: ghcr.io/table-side/restaurant:main
     depends_on:
       - database
       - frontdoor
@@ -40,7 +40,7 @@ services:
       - application
 
   order:
-    build: "ghcr.io/Table-Side/order:main"
+    image: ghcr.io/table-side/order:main
     depends_on:
       - database
       - restaurant
@@ -48,10 +48,11 @@ services:
       - application
 
   kitchen:
-    build: "ghcr.io/Table-Side/kitchen:main"
+    image: ghcr.io/table-side/kitchen:main
     depends_on:
       - database
       - restaurant
+      - order
     networks:
       - application
 
