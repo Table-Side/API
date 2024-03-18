@@ -11,8 +11,6 @@ services:
     env_file: .env
     networks:
       - application
-    volumes:
-      - database:/var/lib/postgresql/data
   
   pgadmin:
     image: dpage/pgadmin4
