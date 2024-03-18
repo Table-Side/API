@@ -8,9 +8,21 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+`     - POSTGRES_FRONTDOOR_USER
+      - POSTGRES_FRONTDOOR_PASSWORD
+      - POSTGRES_FRONTDOOR_DB
+      - POSTGRES_KITCHEN_USER
+      - POSTGRES_KITCHEN_PASSWORD
+      - POSTGRES_KITCHEN_DB
+      - POSTGRES_ORDER_USER
+      - POSTGRES_ORDER_PASSWORD
+      - POSTGRES_ORDER_DB
+      - POSTGRES_RESTAURANT_USER
+      - POSTGRES_RESTAURANT_PASSWORD
+      - POSTGRES_RESTAURANT_DB
     env_file: .env
     networks:
-      - application
+      - internal
 
   pgadmin:
     image: dpage/pgadmin4
@@ -20,16 +32,16 @@ services:
       - PGADMIN_DEFAULT_PASSWORD
     env_file: .env
     networks:
-      - application
-      - public
+      - internal
+      - external
   
   frontdoor:
     image: ghcr.io/table-side/frontdoor:main
     depends_on:
       - database
     networks:
-      - application
-      - public
+      - internal
+      - external
 
   restaurant:
     image: ghcr.io/table-side/restaurant:main
@@ -37,7 +49,7 @@ services:
       - database
       - frontdoor
     networks:
-      - application
+      - internal
 
   order:
     image: ghcr.io/table-side/order:main
@@ -45,7 +57,7 @@ services:
       - database
       - restaurant
     networks:
-      - application
+      - internal
 
   kitchen:
     image: ghcr.io/table-side/kitchen:main
@@ -54,12 +66,14 @@ services:
       - restaurant
       - order
     networks:
-      - application
+      - internal
 
 networks:
-  application:
+  external:
     driver: overlay
-  public:
-    driver: host
-    external: true
+    attachable: true
+  internal:
+    driver: overlay
+    internal: true
+    attachable: true
   
