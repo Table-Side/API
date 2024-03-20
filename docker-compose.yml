@@ -1,15 +1,58 @@
 version: "3.8"
 
 services:
+  etcd:
+    image: bitnami/etcd:latest
+    restart: always
+    environment:
+      ETCD_DATA_DIR: /etcd_data
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    ports:
+      - "2379:2379/tcp"
+    networks:
+      - apisix
+    volumes:
+      - etcd_data:/bitnami/etcd
+
+  apisix:
+    image: apache/apisix:latest
+    restart: always
+    depends_on:
+      - etcd
+    networks:
+      - app-network
+      - apisix
+    ports:
+      - "9080:9080"
+      - "9443:9443"
+    volumes:
+      - ./conf/apisix/config.yml:/usr/local/apisix/conf/config.yaml:ro
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:latest
+    restart: on-failure
+    depends_on:
+      - etcd
+      - apisix
+    networks:
+      - apisix
+    ports:
+      - "9180:9180"
+    volumes:
+      - ./conf/apisix-dashboard/config.yml:/usr/local/apisix-dashboard/conf/conf.yaml
+    
   database:
     image: ghcr.io/table-side/database:main
     restart: always
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_FRONTDOOR_USER
-      - POSTGRES_FRONTDOOR_PASSWORD
-      - POSTGRES_FRONTDOOR_DB
+      - POSTGRES_IAM_USER
+      - POSTGRES_IAM_PASSWORD
+      - POSTGRES_IAM_DB
       - POSTGRES_KITCHEN_USER
       - POSTGRES_KITCHEN_PASSWORD
       - POSTGRES_KITCHEN_DB
@@ -21,7 +64,7 @@ services:
       - POSTGRES_RESTAURANT_DB
     env_file: .env
     networks:
-      - internal
+      - app-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -31,28 +74,25 @@ services:
       - PGADMIN_DEFAULT_PASSWORD
     env_file: .env
     networks:
-      - internal
+      - app-network
       - external
     ports:
       - "8001:80"
   
-  frontdoor:
-    image: ghcr.io/table-side/frontdoor:main
+  iam:
+    image: ghcr.io/table-side/iam:main
     depends_on:
       - database
     networks:
-      - internal
-      - external
-    ports:
-      - "8000:3000"
+      - app-network
 
   restaurant:
     image: ghcr.io/table-side/restaurant:main
     depends_on:
       - database
-      - frontdoor
+      - iam
     networks:
-      - internal
+      - app-network
 
   order:
     image: ghcr.io/table-side/order:main
@@ -60,7 +100,7 @@ services:
       - database
       - restaurant
     networks:
-      - internal
+      - app-network
 
   kitchen:
     image: ghcr.io/table-side/kitchen:main
@@ -69,13 +109,19 @@ services:
       - restaurant
       - order
     networks:
-      - internal
+      - app-network
+
+volumes:
+  etcd_data:
+    driver: local
 
 networks:
+  apisix:
+    driver: bridge
   external:
     driver: overlay
     attachable: true
-  internal:
+  app-network:
     driver: overlay
     internal: true
     attachable: true
