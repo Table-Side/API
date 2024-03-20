@@ -89,5 +89,10 @@ routes:
       - /kitchen/*
     upstream:
       type: roundrobin
- `     nodes:
+     nodes:
         - kitchen:3000/
+
+  - name: kitchen-blacklisted-routes # block external requests
+    uri:
+      - /kitchen/orders/receieve
+    status: 403
