@@ -40,7 +40,7 @@ services:
     networks:
       - apisix
     ports:
-      - "9180:9180"
+      - "9180:9000"
     volumes:
       - ./conf/apisix-dashboard/config.yml:/usr/local/apisix-dashboard/conf/conf.yaml
     
