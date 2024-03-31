@@ -2,7 +2,7 @@
 
 The repository for Tableside's API.
 
-Uses Apache APISIX for an API Gateway. APISIX is configured to run in (Standalone mode)[https://apisix.apache.org/docs/apisix/deployment-modes/#standalone].
+Uses Apache APISIX for an API Gateway. APISIX is configured to run in [Standalone mode](https://apisix.apache.org/docs/apisix/deployment-modes/#standalone).
 Microservice requests are proxied via the gateway.
 
 ## Local Setup
