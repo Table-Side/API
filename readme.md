@@ -5,7 +5,7 @@ The repository for Tableside's API.
 Uses Apache APISIX for an API Gateway. APISIX is configured to run in [Standalone mode](https://apisix.apache.org/docs/apisix/deployment-modes/#standalone).
 Microservice requests are proxied via the gateway.
 
-## Local Setup
+## Local Setup (Using Latest Images)
 
 Before following these instructions, ensure the [Tableside IAM](https://github.com/Table-Side/IAM) service is running locally.
 
@@ -22,7 +22,20 @@ Before following these instructions, ensure the [Tableside IAM](https://github.c
   }
 }
 ```
-5. Create a `.env` file based on the `sample.env` file available. Generate your usernames and passwords.
-6. Run `docker compose up -d` to start the API service.
+5. Create a `.env` file based on the `sample.env` file available.
+6. Run `docker compose -f docker-compose up -d` to start the API service.
+7. Ensure all services start correctly.
+8. Send all requests via the APISIX gateway at `localhost:9080`.
+
+## Local Setup (Using Repositories)
+
+Recommended if any changes are being made to the microservice repos.
+
+1. Clone this repo
+2. Clone all microservice repos
+3. Ensure [Docker](https://docs.docker.com/get-docker/) is installed on your machine
+4. Update the build context for each service to point to the correct location.
+5. Create a `.env` file based on the `sample.env` file available.
+6. Run `docker compose -f docker-compose.local.yml up -d` to start the API service.
 7. Ensure all services start correctly.
 8. Send all requests via the APISIX gateway at `localhost:9080`.
