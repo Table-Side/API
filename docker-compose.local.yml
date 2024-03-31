@@ -14,6 +14,7 @@ services:
     volumes:
       - ./conf/apisix/config.yaml:/usr/local/apisix/conf/config.yaml
       - ./conf/apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./conf/apisix/debug.yaml:/usr/local/apisix/conf/debug.yaml:ro
       - ./scripts/apisix/guid-verify.lua:/usr/local/apisix/scripts/guid-verify.lua:ro
 
   database:
@@ -52,14 +53,18 @@ services:
       - "5080:80"
   
   user-profile:
-    image: ghcr.io/table-side/user-profile:main
+    build:
+      context: .././user
+      dockerfile: Dockerfile
     depends_on:
       - database
     networks:
       - app-network
 
   restaurant:
-    image: ghcr.io/table-side/restaurant:main
+    build:
+      context: .././restaurant
+      dockerfile: Dockerfile
     depends_on:
       - database
       - user-profile
@@ -67,7 +72,9 @@ services:
       - app-network
 
   order:
-    image: ghcr.io/table-side/order:main
+    build:
+      context: .././order
+      dockerfile: Dockerfile
     depends_on:
       - database
       - restaurant
@@ -75,7 +82,9 @@ services:
       - app-network
 
   kitchen:
-    image: ghcr.io/table-side/kitchen:main
+    build:
+      context: .././kitchen
+      dockerfile: Dockerfile
     depends_on:
       - database
       - restaurant

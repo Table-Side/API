@@ -1,0 +1,93 @@
+plugins:
+  - name: authz-keycloak
+
+plugin_configs:
+  -
+    id: 1
+    desc: "Auth"
+    plugins:
+      authz-keycloak:
+        client_id: "apisix"
+        server_url: "https://auth.tableside.site/auth/realms/restaurant"
+        discovery: "http://auth.tableside.site/auth/realms/restaurant/.well-known/openid-configuration"
+  - id: 2
+    desc: "Block external traffic from hitting Kitchen Receive Order URL"
+    plugins:
+      uri-blocker:
+        rejected_msg: "Access Forbidden. Route is blocked to external traffic."
+        block_rules:
+          - "/kitchen/orders/receive"
+      
+
+global_rules:
+  -
+    id: 1
+    plugins:
+      limit-req:
+        count: 25,
+        time_window: 60,
+        rejected_code: 429,
+        rejected_message: "Too many requests. Please try again later and reduce the frequency of requests."
+        key: remote_addr
+  -
+    id: 2
+    plugins:
+      request-id:
+        header_name: "X-Request-ID"
+
+upstreams:
+  - name: "Restaurant"
+    id: 1
+    nodes:
+      - host: "restaurant"
+        port: 3000
+        weight: 1
+    type: roundrobin
+  - name: "Order"
+    id: 2
+    nodes:
+      - host: "order"
+        port: 3000
+        weight: 1
+    type: roundrobin
+  - name: "Kitchen"
+    id: 3
+    nodes:
+      - host: "kitchen"
+        port: 3000
+        weight: 1
+    type: roundrobin
+
+routes:
+  - name: restaurant-all-route # no auth required
+    uri: /restaurants/all
+    upstream_id: 1
+
+  - name: restaurant-id-get-route # no auth required, guid verification required
+    uri: /restaurants/:guid/details
+    script: "/usr/local/apisix/scripts/guid-verify.lua"
+    upstream_id: 1
+
+  - name: restaurant-protected-routes # auth required
+    uri: /restaurants/*
+    upstream_id: 1
+    plugin_config_id: 1
+  
+  - name: order-routes # auth required
+    uri: /orders/*
+    upstream_id: 2
+    plugin_config_id: 1
+  
+  - name: kitchen-routes # auth required
+    uri: /kitchen/:guid/*
+    script: "/usr/local/apisix/scripts/guid-verify.lua"
+    upstream_id: 3
+    plugin_config_id: 1
+
+  - name: kitchen-routes-block-external # block external requests
+    uri: /kitchen/orders/receive
+    upstream_id: 3
+    plugin_config_id: 2
+          
+
+#END
