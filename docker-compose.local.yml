@@ -63,7 +63,6 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - database
-      - user-profile
     networks:
       - app-network
 

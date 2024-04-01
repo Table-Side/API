@@ -60,7 +60,6 @@ services:
     image: ghcr.io/table-side/restaurant:main
     depends_on:
       - database
-      - user-profile
     networks:
       - app-network
 
