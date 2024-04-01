@@ -28,11 +28,11 @@ jobs:
       - name: Upload docker-compose.yml to VM
         run: scp -i ./api.pem docker-compose.yml ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:server/docker-compose.yml
 
-      - name: Upload `/conf` directory to VM
-        run: scp -i ./api.pem -r conf ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:server
+      - name: Upload `/apisix` directory to VM
+        run: scp -i ./api.pem -r apisix ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:server/apisix
   
-      - name: Upload `/scripts` directory to VM
-        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:server
+      - name: Upload `/nginx` directory to VM
+        run: scp -i ./api.pem -r nginx ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:server/nginx
         
       - name: Create .env file
         run: |
