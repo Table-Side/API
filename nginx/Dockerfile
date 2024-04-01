@@ -2,7 +2,7 @@ FROM nginx:stable-alpine
 
 # Nginx configuration
 RUN rm -rf /etc/nginx/conf.d/*
-COPY ./conf/keycloak.conf /etc/nginx/conf.d/keycloak.conf
+COPY ./conf/apisix.conf /etc/nginx/conf.d/apisix.conf
 COPY ./conf/lets-encrypt.conf /etc/nginx/conf.d/lets-encrypt.conf
 
 # Install certbot
