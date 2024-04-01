@@ -20,6 +20,11 @@ services:
   database:
     image: ghcr.io/table-side/database:main
     restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -51,15 +56,6 @@ services:
       - external
     ports:
       - "5080:80"
-  
-  user-profile:
-    build:
-      context: .././user
-      dockerfile: Dockerfile
-    depends_on:
-      - database
-    networks:
-      - app-network
 
   restaurant:
     build:
