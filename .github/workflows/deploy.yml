@@ -56,6 +56,14 @@ jobs:
           echo 'PGADMIN_DEFAULT_PASSWORD="${{ secrets.PGADMIN_DEFAULT_PASSWORD }}"' >> .env
           echo ' # - Keycloak - #' >> .env
           echo 'KEYCLOAK_CLIENT_SECRET="${{ secrets.KEYCLOAK_CLIENT_SECRET }}"' >> .env
+          echo ' # - NGINX - #' >> .env
+          echo 'APISIX_HOST="apisix"' >> .env
+          echo 'APISIX_PORT="9080"' >> .env
+          echo 'APISIX_DOMAIN="api.tableside.site"' >> .env
+          echo 'LE_EMAIL="gg00528@surrey.ac.uk"' >> .env
+          echo 'LE_OPTIONS="--keep-until-expiring"' >> .env
+          echo 'LE_RENEW_OPTIONS="--dry-run --no-self-upgrade --post-hook 'nginx -s reload'"' >> .env
+          echo 'LE_RENEW_CRON_COMMAND="echo 'Dummy cron command'"' >> .env
 
       - name: Upload .env file to VM
         run: scp -i ./api.pem .env ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/.env
