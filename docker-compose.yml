@@ -1,6 +1,30 @@
 version: "3.8"
 
 services:
+  # Frontdoor
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    environment:
+      - APISIX_HOST
+      - APISIX_PORT
+      - DOMAIN
+      - LE_EMAIL
+      - LE_OPTIONS
+      - LE_RENEW_OPTIONS
+      - LE_RENEW_CRON_COMMAND
+    env_file: .env
+    depends_on:
+      - apisix
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    networks:
+      - apisix
+    volumes:
+      - reverse-proxy-nginx-data:/etc/letsencrypt
   apisix:
     image: apache/apisix:latest
     environment:
@@ -9,13 +33,12 @@ services:
     networks:
       - app-network
       - apisix
-    ports:
-      - "9080:9080"
     volumes:
       - ./conf/apisix/config.yaml:/usr/local/apisix/conf/config.yaml
       - ./conf/apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
       - ./scripts/apisix/guid-verify.lua:/usr/local/apisix/scripts/guid-verify.lua:ro
 
+  # Application Database
   database:
     image: ghcr.io/table-side/database:main
     restart: always
@@ -42,7 +65,6 @@ services:
     env_file: .env
     networks:
       - app-network
-
   pgadmin:
     image: dpage/pgadmin4
     restart: unless-stopped
@@ -55,13 +77,13 @@ services:
     ports:
       - "5080:80"
   
+  # Application Services
   restaurant:
     image: ghcr.io/table-side/restaurant:main
     depends_on:
       - database
     networks:
       - app-network
-
   order:
     image: ghcr.io/table-side/order:main
     depends_on:
@@ -69,7 +91,6 @@ services:
       - restaurant
     networks:
       - app-network
-
   kitchen:
     image: ghcr.io/table-side/kitchen:main
     depends_on:
@@ -80,8 +101,7 @@ services:
       - app-network
 
 volumes:
-  etcd_data:
-    driver: local
+  reverse-proxy-nginx-data:
 
 networks:
   apisix:
