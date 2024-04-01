@@ -11,8 +11,8 @@ if [ -n "$APISIX_HOST" ] && \
     sed -i s/__APISIX_HOST__/$APISIX_HOST/g /etc/nginx/conf.d/apisix.conf
     sed -i s/__APISIX_PORT__/$APISIX_PORT/g /etc/nginx/conf.d/apisix.conf
 
-    sed -i s/__DOMAIN__/$APISIX_DOMAIN/g /etc/nginx/conf.d/apisix.conf
-    sed -i s/__DOMAIN__/$APISIX_DOMAIN/g /etc/nginx/conf.d/lets-encrypt.conf
+    sed -i s/__APISIX_DOMAIN__/$APISIX_DOMAIN/g /etc/nginx/conf.d/apisix.conf
+    sed -i s/__APISIX_DOMAIN__/$APISIX_DOMAIN/g /etc/nginx/conf.d/lets-encrypt.conf
     
     LE_OPTIONS=$(eval echo $LE_OPTIONS)
     LE_RENEW_OPTIONS=$(eval echo $LE_RENEW_OPTIONS)
