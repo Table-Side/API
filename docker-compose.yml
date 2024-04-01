@@ -22,17 +22,17 @@ services:
       - "443:443"
     restart: unless-stopped
     networks:
-      - apisix
+      - dmz
     volumes:
       - reverse-proxy-nginx-data:/etc/letsencrypt
   apisix:
     image: apache/apisix:latest
     environment:
       - APISIX_STAND_ALONE=true
-    restart: always
+    restart: unless-stopped
     networks:
-      - app-network
-      - apisix
+      - app
+      - dmz
     volumes:
       - ./conf/apisix/config.yaml:/usr/local/apisix/conf/config.yaml
       - ./conf/apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
@@ -41,7 +41,7 @@ services:
   # Application Database
   database:
     image: ghcr.io/table-side/database:main
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
       timeout: 45s
@@ -64,7 +64,8 @@ services:
       - POSTGRES_RESTAURANT_DB
     env_file: .env
     networks:
-      - app-network
+      - app
+      - app-db
   pgadmin:
     image: dpage/pgadmin4
     restart: unless-stopped
@@ -73,7 +74,7 @@ services:
       - PGADMIN_DEFAULT_PASSWORD
     env_file: .env
     networks:
-      - app-network
+      - app-db
     ports:
       - "5080:80"
   
@@ -83,14 +84,16 @@ services:
     depends_on:
       - database
     networks:
-      - app-network
+      - app
+    restart: unless-stopped
   order:
     image: ghcr.io/table-side/order:main
     depends_on:
       - database
       - restaurant
     networks:
-      - app-network
+      - app
+    restart: unless-stopped
   kitchen:
     image: ghcr.io/table-side/kitchen:main
     depends_on:
@@ -98,14 +101,17 @@ services:
       - restaurant
       - order
     networks:
-      - app-network
+      - app
+    restart: unless-stopped
 
 volumes:
   reverse-proxy-nginx-data:
 
 networks:
-  apisix:
+  dmz:
     driver: bridge
-  app-network:
+  app:
+    driver: bridge
+  app-db:
     driver: bridge
   
