@@ -22,16 +22,11 @@ PREFIX=${APISIX_PREFIX:=/usr/local/apisix}
 
 if [[ "$1" == "docker-start" ]]; then
     if [ "$APISIX_STAND_ALONE" = "true" ]; then
-      # If the file is not present then initialise the content otherwise update relevant keys for standalone mode
-      if [ ! -f "${PREFIX}/conf/config.yaml" ]; then
+        # If the file is not present then initialise the content otherwise update relevant keys for standalone mode
+        if [ ! -f "${PREFIX}/conf/config.yaml" ]; then
             echo "No config.yaml file found."
             exit 1
-      else
-            # updating config.yaml for standalone mode
-            echo "$(sed 's/role: traditional/role: data_plane/g' ${PREFIX}/conf/config.yaml)" > ${PREFIX}/conf/config.yaml
-            echo "$(sed 's/role_traditional:/role_data_plane:/g' ${PREFIX}/conf/config.yaml)" > ${PREFIX}/conf/config.yaml
-            echo "$(sed 's/config_provider: etcd/config_provider: yaml/g' ${PREFIX}/conf/config.yaml)" > ${PREFIX}/conf/config.yaml
-      fi
+        fi
 
         if [ ! -f "${PREFIX}/conf/apisix.yaml" ]; then
             echo "No apisix.yaml file found."
