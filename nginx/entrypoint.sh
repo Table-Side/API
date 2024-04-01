@@ -18,8 +18,8 @@ if [ -n "$APISIX_HOST" ] && \
     LE_RENEW_OPTIONS=$(eval echo $LE_RENEW_OPTIONS)
     LE_RENEW_CRON_COMMAND=$(eval echo $LE_RENEW_CRON_COMMAND)
 
-    # Disable Keycloak config first as cert not present.
-    echo "Disabling Keycloak config..."
+    # Disable APISIX config first as cert not present.
+    echo "Disabling APISIX config..."
     mv -v /etc/nginx/conf.d/apisix.conf /etc/nginx/conf.d/apisix.conf.disabled
 
     (
@@ -31,8 +31,8 @@ if [ -n "$APISIX_HOST" ] && \
             --agree-tos --email "${LE_EMAIL}" \
             --webroot -w /usr/share/nginx/html -d $APISIX_DOMAIN
 
-        # Enable Keycloak config
-        echo "Re-Enabling Keycloak config with SSL certificate..."
+        # Enable APISIX config
+        echo "Re-Enabling APISIX config with SSL certificate..."
         mv -v /etc/nginx/conf.d/apisix.conf.disabled /etc/nginx/conf.d/apisix.conf
 
         echo "Reloading NGINX with SSL..."
