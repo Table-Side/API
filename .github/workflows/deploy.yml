@@ -30,6 +30,9 @@ jobs:
 
       - name: Upload `/apisix` directory to VM
         run: scp -i ./api.pem -r ./apisix/ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/
+
+      - name: Upload `/app-database` directory to VM
+        run: scp -i ./api.pem -r ./app-database/ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/
   
       - name: Upload `/nginx` directory to VM
         run: scp -i ./api.pem -r ./nginx/ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/
