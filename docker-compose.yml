@@ -40,7 +40,9 @@ services:
 
   # Application Database
   database:
-    image: ghcr.io/table-side/database:main
+    build: 
+      context: ./app-database
+      dockerfile: Dockerfile
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
@@ -50,18 +52,15 @@ services:
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_USERS_USER
-      - POSTGRES_USERS_PASSWORD
-      - POSTGRES_USERS_DB
-      - POSTGRES_KITCHEN_USER
-      - POSTGRES_KITCHEN_PASSWORD
-      - POSTGRES_KITCHEN_DB
-      - POSTGRES_ORDER_USER
-      - POSTGRES_ORDER_PASSWORD
-      - POSTGRES_ORDER_DB
       - POSTGRES_RESTAURANT_USER
       - POSTGRES_RESTAURANT_PASSWORD
       - POSTGRES_RESTAURANT_DB
+      - POSTGRES_ORDER_USER
+      - POSTGRES_ORDER_PASSWORD
+      - POSTGRES_ORDER_DB
+      - POSTGRES_KITCHEN_USER
+      - POSTGRES_KITCHEN_PASSWORD
+      - POSTGRES_KITCHEN_DB
     env_file: .env
     networks:
       - app
