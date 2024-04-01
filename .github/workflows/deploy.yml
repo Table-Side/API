@@ -30,9 +30,15 @@ jobs:
 
       - name: Upload `/conf` directory to VM
         run: scp -i ./api.pem -r conf ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/conf & chmod -R 0444 server/conf
+  
+      - name: Fix `/conf` permissions
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} chmod -R 0444 server/conf
 
       - name: Upload `/scripts` directory to VM
-        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/scripts & chmod -R 0444 server/conf
+        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/scripts 
+        
+      - name: Fix `/scripts` permissions
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} chmod -R 0444 server/scripts
 
       - name: Create .env file
         run: |
