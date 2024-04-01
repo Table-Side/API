@@ -52,7 +52,6 @@ services:
     env_file: .env
     networks:
       - app-network
-      - external
     ports:
       - "5080:80"
   
@@ -87,11 +86,6 @@ volumes:
 networks:
   apisix:
     driver: bridge
-  external:
-    driver: overlay
-    attachable: true
   app-network:
-    driver: overlay
-    internal: true
-    attachable: true
+    driver: bridge
   
