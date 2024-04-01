@@ -1,0 +1,36 @@
+name: Create and publish Docker image
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dry-run-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build . -t tableside/database:latest
+
+      - name: Run Docker image with sample environment variables
+        run: source sample.env && docker run -e POSTGRES_USER="$POSTGRES_USER" -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" -v ./sample.env:/database/.env --name test-container tableside/database:latest
+
+      - name: Check Docker container status
+        run: |
+            MAX_CHECKS=10
+            i=1
+            
+            until echo "Check $i/$MAX_CHECKS" && docker exec test-container pg_isready; do
+            sleep 2
+            if ((i >= MAX_CHECKS)); then
+                break
+            else
+                i=$((i + 1))
+            fi
+            done
+
+      - name: Stop and remove Docker container
+        run: docker rm -f test-container
