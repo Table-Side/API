@@ -29,10 +29,10 @@ jobs:
         run: scp -i ./api.pem docker-compose.yml ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/docker-compose.yml
 
       - name: Upload `/conf` directory to VM
-        run: scp -i ./api.pem -r conf ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/conf
+        run: scp -i ./api.pem -r conf ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/conf & chmod -R 0444 server/conf
 
       - name: Upload `/scripts` directory to VM
-        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/scripts
+        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/scripts & chmod -R 0444 server/conf
 
       - name: Create .env file
         run: |
