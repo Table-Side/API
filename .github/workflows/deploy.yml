@@ -12,3 +12,56 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Fetch .pem file from secret storage
+        run: echo '${{ secrets.AZURE_VM_SSH_KEY }}' > api.pem && chmod 600 api.pem
+      
+      - name: Make SSH directory
+        run: mkdir -p ~/.ssh && chmod 700 ~/.ssh
+
+      - name: Add host to known hosts
+        run: ssh-keyscan -H ${{ secrets.AZURE_VM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create server directory on VM
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} mkdir -p server
+
+      - name: Upload docker-compose.yml to VM
+        run: scp -i ./api.pem docker-compose.yml ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/docker-compose.yml
+
+      - name: Upload `/conf` directory to VM
+        run: scp -i ./api.pem -r conf ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/conf
+
+      - name: Upload `/scripts` directory to VM
+        run: scp -i ./api.pem -r scripts ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/scripts
+
+      - name: Create .env file
+        run: |
+          echo ' # - Root Account - #' >> .env
+          echo 'POSTGRES_USER="${{ secrets.POSTGRES_USER }}"' >> .env
+          echo 'POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}"' >> .env
+          echo ' # - Kitchen DB - #' >> .env
+          echo 'POSTGRES_KITCHEN_USER="${{ secrets.POSTGRES_KITCHEN_USER }}"' >> .env
+          echo 'POSTGRES_KITCHEN_PASSWORD="${{ secrets.POSTGRES_KITCHEN_PASSWORD }}"' >> .env
+          echo 'POSTGRES_KITCHEN_DB="${{ secrets.POSTGRES_KITCHEN_DB }}"' >> .env
+          echo ' # - Order DB - #' >> .env
+          echo 'POSTGRES_ORDER_USER="${{ secrets.POSTGRES_ORDER_USER }}"' >> .env
+          echo 'POSTGRES_ORDER_PASSWORD="${{ secrets.POSTGRES_ORDER_PASSWORD }}"' >> .env
+          echo 'POSTGRES_ORDER_DB="${{ secrets.POSTGRES_ORDER_DB }}"' >> .env
+          echo ' # - Restaurant DB - #' >> .env
+          echo 'POSTGRES_RESTAURANT_USER="${{ secrets.POSTGRES_RESTAURANT_USER }}"' >> .env
+          echo 'POSTGRES_RESTAURANT_PASSWORD="${{ secrets.POSTGRES_RESTAURANT_PASSWORD }}"' >> .env
+          echo 'POSTGRES_RESTAURANT_DB="${{ secrets.POSTGRES_RESTAURANT_DB }}"' >> .env
+          echo ' # - PGAdmin - #' >> .env
+          echo 'PGADMIN_DEFAULT_EMAIL="${{ secrets.PGADMIN_DEFAULT_EMAIL }}"' >> .env
+          echo 'PGADMIN_DEFAULT_PASSWORD="${{ secrets.PGADMIN_DEFAULT_PASSWORD }}"' >> .env
+          echo ' # - Keycloak - #' >> .env
+          echo 'KEYCLOAK_CLIENT_SECRET="${{ secrets.KEYCLOAK_CLIENT_SECRET }}"' >> .env
+
+      - name: Upload .env file to VM
+        run: scp -i ./api.pem .env ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:~/server/.env
+
+      - name: Stop docker compose instance on VM (if currently running)
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml down
+
+      - name: Build and Run docker compose on VM
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml up -d
