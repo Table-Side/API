@@ -67,6 +67,10 @@ COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
+USER root
+RUN chmod +x /docker-entrypoint.sh
+USER apisix
+
 CMD ["docker-start"]
 
 
