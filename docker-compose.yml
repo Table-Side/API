@@ -34,10 +34,10 @@ services:
       - app
       - dmz
     volumes:
-      - ./apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml
-      - ./apisix/conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml
-      - ./apisix/conf/debug.yaml:/usr/local/apisix/conf/debug.yaml
-      - ./apisix/scripts/guid-verify.lua:/usr/local/apisix/scripts/guid-verify.lua
+      - ./apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./apisix/conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./apisix/conf/debug.yaml:/usr/local/apisix/conf/debug.yaml:ro
+      - ./apisix/scripts/guid-verify.lua:/usr/local/apisix/scripts/guid-verify.lua:ro
 
   # Application Database
   database:
