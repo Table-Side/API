@@ -8,8 +8,15 @@ plugin_configs:
     plugins:
       authz-keycloak:
         client_id: "apisix"
+        realm: "Tableside"
+        client_secret: "__KEYCLOAK_CLIENT_SECRET__"
         server_url: "https://auth.tableside.site/realms/Tableside"
         discovery: "https://auth.tableside.site/realms/Tableside/.well-known/openid-configuration"
+        token_endpoint: "https://auth.tableside.site/realms/Tableside/protocol/openid-connect/token"
+        http_method_as_scope: true
+        bearer_only: true
+        ssl_verify: false
+
   - id: 2
     desc: "Block external traffic from hitting Kitchen Receive Order URL"
     plugins:
