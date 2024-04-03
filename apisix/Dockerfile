@@ -49,6 +49,9 @@ RUN apt-get -y purge --auto-remove curl wget gnupg --allow-remove-essential
 
 WORKDIR /usr/local/apisix
 
+COPY ./conf/ /usr/local/apisix/conf/
+COPY ./scripts/ /usr/local/apisix/scripts/
+
 RUN sed -i s/__KEYCLOAK_CLIENT_SECRET__/$KEYCLOAK_CLIENT_SECRET/g /usr/local/apisix/conf/apisix.yaml
 
 ENV PATH=$PATH:/usr/local/openresty/luajit/bin:/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin
