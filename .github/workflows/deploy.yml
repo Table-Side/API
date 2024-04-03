@@ -80,8 +80,8 @@ jobs:
       - name: Build `apisix`
         run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml build apisix
       
-      - name: Build `app-database`
-        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml build app-database
+      - name: Build `database`
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml build database
       
       - name: Build `nginx`
         run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml build nginx
