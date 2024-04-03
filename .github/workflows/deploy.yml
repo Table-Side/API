@@ -74,5 +74,11 @@ jobs:
       - name: Stop docker compose instance on VM (if currently running)
         run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml down
 
-      - name: Build and Run docker compose on VM
+      - name: Pull latest images on VM
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml pull
+      
+      - name: Build docker compose on VM
+        run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml build
+
+      - name: Run docker compose on VM
         run: ssh -i ./api.pem ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} sudo docker compose -f server/docker-compose.yml up -d
