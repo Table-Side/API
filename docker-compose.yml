@@ -67,18 +67,6 @@ services:
     env_file: .env
     networks:
       - app
-      - app-db
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    environment:
-      - PGADMIN_DEFAULT_EMAIL
-      - PGADMIN_DEFAULT_PASSWORD
-    env_file: .env
-    networks:
-      - app-db
-    ports:
-      - "5080:80"
   
   # Application Services
   restaurant:
@@ -113,7 +101,5 @@ networks:
   dmz:
     driver: bridge
   app:
-    driver: bridge
-  app-db:
     driver: bridge
   
