@@ -49,6 +49,7 @@ RUN apt-get -y purge --auto-remove curl wget gnupg --allow-remove-essential
 
 WORKDIR /usr/local/apisix
 
+# Copy `conf` and `scripts` directories
 COPY ./conf/ /usr/local/apisix/conf/
 COPY ./scripts/ /usr/local/apisix/scripts/
 
