@@ -1,5 +1,6 @@
 plugins:
   - name: authz-keycloak
+  - name: cors
 
 plugin_configs:
   -
