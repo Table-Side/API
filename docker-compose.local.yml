@@ -11,8 +11,8 @@ services:
     networks:
       - app
     ports:
-      - "9080:80"
-      - "9443:443"
+      - "9080:9080"
+      - "9443:9443"
     volumes:
       - ./apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml:rw
       - ./apisix/conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
@@ -45,6 +45,8 @@ services:
     networks:
       - app
       - app-db
+    ports:
+      - "5432:5432"
   pgadmin:
     image: dpage/pgadmin4
     restart: unless-stopped
@@ -55,7 +57,7 @@ services:
     networks:
       - app-db
     ports:
-      - "5080:3010"
+      - "5080:5080"
 
   # Application Services
   restaurant:
@@ -65,8 +67,6 @@ services:
     networks:
       - app
     restart: unless-stopped
-    ports:
-      - "3010:3000"
   order:
     image: ghcr.io/table-side/order:main
     depends_on:
@@ -75,8 +75,6 @@ services:
     networks:
       - app
     restart: unless-stopped
-    ports:
-      - "3020:3000"
   kitchen:
     image: ghcr.io/table-side/kitchen:main
     depends_on:
@@ -86,8 +84,6 @@ services:
     networks:
       - app
     restart: unless-stopped
-    ports:
-      - "3030:3000"
 
 networks:
   app:
