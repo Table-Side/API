@@ -1,6 +1,9 @@
 plugins:
   - name: authz-keycloak
   - name: cors
+  - name: uri-blocker
+  - name: request-id
+  - name: limit-req
 
 plugin_configs:
   -
@@ -44,6 +47,10 @@ global_rules:
     plugins:
       request-id:
         header_name: "X-Request-ID"
+  -
+    id: 3
+    plugins:
+      cors:
 
 upstreams:
   - name: "Restaurant"
