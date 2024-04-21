@@ -76,9 +76,10 @@ upstreams:
     type: roundrobin
 
 routes:
-  - name: restaurant-all-route # no auth required
-    uri: /restaurants/
+  - name: restaurant-root-route # auth required
+    uri: /restaurants
     upstream_id: 1
+    plugin_config_id: 1
 
   - name: restaurant-protected-routes # auth required
     uri: /restaurants/*
