@@ -77,12 +77,7 @@ upstreams:
 
 routes:
   - name: restaurant-all-route # no auth required
-    uri: /restaurants/all
-    upstream_id: 1
-
-  - name: restaurant-id-get-route # no auth required, guid verification required
-    uri: /restaurants/:guid/details
-    script: "/usr/local/apisix/scripts/guid-verify.lua"
+    uri: /restaurants/
     upstream_id: 1
 
   - name: restaurant-protected-routes # auth required
