@@ -67,6 +67,8 @@ services:
     env_file: .env
     networks:
       - app
+    volumes:
+      - database-data:/var/lib/postgresql/data
   
   # Application Services
   restaurant:
@@ -96,6 +98,7 @@ services:
 
 volumes:
   reverse-proxy-nginx-data:
+  database-data:
 
 networks:
   dmz:
