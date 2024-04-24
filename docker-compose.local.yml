@@ -1,23 +1,6 @@
 version: "3.8"
 
 services:
-  apisix:
-    build: 
-      context: ./apisix
-      dockerfile: Dockerfile
-    environment:
-      - APISIX_STAND_ALONE=true
-    restart: unless-stopped
-    networks:
-      - app
-    ports:
-      - "9080:9080"
-      - "9443:9443"
-    volumes:
-      - ./apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml:rw
-      - ./apisix/conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
-      - ./apisix/conf/debug.yaml:/usr/local/apisix/conf/debug.yaml:ro
-      - ./apisix/scripts/guid-verify.lua:/usr/local/apisix/scripts/guid-verify.lua
   database:
     build: 
       context: ./app-database
@@ -61,22 +44,30 @@ services:
 
   # Application Services
   restaurant:
-    image: ghcr.io/table-side/restaurant:main
+    build: 
+      context: ../restaurant
+      dockerfile: Dockerfile
     depends_on:
       - database
     networks:
       - app
     restart: unless-stopped
+    ports: "3000:3001"
   order:
-    image: ghcr.io/table-side/order:main
+    build: 
+      context: ../order
+      dockerfile: Dockerfile
     depends_on:
       - database
       - restaurant
     networks:
       - app
     restart: unless-stopped
+    ports: "3000:3002"
   kitchen:
-    image: ghcr.io/table-side/kitchen:main
+    build: 
+      context: ../kitchen
+      dockerfile: Dockerfile
     depends_on:
       - database
       - restaurant
@@ -84,6 +75,7 @@ services:
     networks:
       - app
     restart: unless-stopped
+    ports: "3000:3003"
 
 networks:
   app:
