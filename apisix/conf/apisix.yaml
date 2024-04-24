@@ -76,28 +76,22 @@ upstreams:
     type: roundrobin
 
 routes:
-  - name: restaurant-root-route # auth required
-    uri: /restaurants
-    upstream_id: 1
-    plugin_config_id: 1
-
-  - name: restaurant-protected-routes # auth required
+  - name: restaurant-routes
     uri: /restaurants/*
     upstream_id: 1
     plugin_config_id: 1
   
-  - name: order-routes # auth required
+  - name: order-routes
     uri: /orders/*
     upstream_id: 2
     plugin_config_id: 1
   
-  - name: kitchen-routes # auth required
-    uri: /kitchen/:guid/*
-    script: "/usr/local/apisix/scripts/guid-verify.lua"
+  - name: kitchen-routes
+    uri: /kitchen/*
     upstream_id: 3
     plugin_config_id: 1
 
-  - name: kitchen-routes-block-external # block external requests
+  - name: kitchen-routes-block-external
     uri: /kitchen/orders/receive
     upstream_id: 3
     plugin_config_id: 2
