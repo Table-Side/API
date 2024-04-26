@@ -67,8 +67,6 @@ services:
     env_file: .env
     networks:
       - app
-    volumes:
-      - db-datastore:/var/lib/postgresql/data
   
   # Application Services
   restaurant:
