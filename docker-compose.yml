@@ -69,6 +69,17 @@ services:
       - app
     volumes:
       - db-datastore:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD
+    ports:
+      - "5050:5050"
+    networks:
+      - app
+    restart: unless-stopped
   
   # Application Services
   restaurant:
