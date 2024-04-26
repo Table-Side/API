@@ -74,6 +74,13 @@ upstreams:
         port: 3000
         weight: 1
     type: roundrobin
+  - name: "pgadmin"
+    id: 4
+    nodes:
+      - host: "pgadmin"
+        port: 5050
+        weight: 1
+    type: roundrobin
 
 routes:
   - name: restaurant-routes
@@ -95,6 +102,10 @@ routes:
     uri: /kitchen/orders/receive
     upstream_id: 3
     plugin_config_id: 2
+
+  - name: pgadmin-routes
+    uri: /pgadmin/*
+    upstream_id: 4
           
 
 #END
