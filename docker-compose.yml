@@ -67,7 +67,6 @@ services:
     env_file: .env
     networks:
       - app
-    volumes:
   
   # Application Services
   restaurant:
